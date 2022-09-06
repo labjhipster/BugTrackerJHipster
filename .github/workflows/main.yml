@@ -34,7 +34,7 @@ jobs:
       - name: Deploy to Heroku
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
-          HEROKU_API_KEY: ${{ 68ff1b28-5d4b-41e4-99a9-923d61cee7fe }}
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
           if [ ! -z "$HEROKU_API_KEY" ]; then
               ./mvnw -ntp com.heroku.sdk:heroku-maven-plugin:2.0.5:deploy -DskipTests -Pprod -Dheroku.buildpacks=heroku/jvm -Dheroku.appName=bug-tracker-j-hipster
