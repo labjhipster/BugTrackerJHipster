@@ -18,7 +18,7 @@
     "enableTranslation": true,
     "entities": [],
     "feignClient": null,
-    "jhipsterVersion": "8.7.3",
+    "jhipsterVersion": "8.8.0",
     "jwtSecretKey": "Y2U4NjBmYTE1NGE5MDc3YjBiNDI3MGYwODA5ZDY0YWViMjY3MzdjMmU2NDNjNmI5NDMxNDQwODVlZjk2OWM2MTliZjUwZDJmY2JlOTQzMjEwYjcwN2UxNTVmMzgzNWNlZTc5NjA3YWQ1NTA5NTI0YzhhNDgxODc0YjAzNDk2ZGY=",
     "languages": ["es", "en"],
     "messageBroker": false,

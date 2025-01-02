@@ -25,7 +25,7 @@ export class TranslationModule {
 
   constructor() {
     this.translateService.setDefaultLang('es');
-    // if user have changed language and navigates away from the application and back to the application then use previously choosed language
+    // if user have changed language and navigates away from the application and back to the application then use previously chosen language
     const langKey = this.stateStorageService.getLocale() ?? 'es';
     this.translateService.use(langKey);
   }
