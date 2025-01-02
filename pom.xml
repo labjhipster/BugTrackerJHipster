@@ -1177,4 +1177,15 @@
             </build>
         </profile>
     </profiles>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>BugTrackerJhipster</id>
+            <url>https://github.com/labjhipster/BugTrackerJHipster</url>
+        </snapshotRepository>
+        <repository>
+            <id>BugTrackerJhipster</id>
+            <url>https://github.com/labjhipster/BugTrackerJHipster</url>
+        </repository>
+    </distributionManagement>
 </project>
