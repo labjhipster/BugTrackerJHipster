@@ -3,7 +3,6 @@ package es.labj.bugtracker.web.rest;
 import es.labj.bugtracker.service.UserService;
 import es.labj.bugtracker.service.dto.UserDTO;
 import java.util.*;
-import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

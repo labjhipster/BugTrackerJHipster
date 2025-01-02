@@ -11,7 +11,6 @@
       "error": "Error"
     },
     "indicator": {
-      "binders": "Agente de mensajes",
       "diskSpace": "Espacio en disco",
       "mail": "Correo Electrónico",
       "livenessState": "Liveness state",
