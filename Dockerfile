@@ -1,26 +1,31 @@
-# Use a multi-stage build to reduce the final image size
+# Etapa 1: Construcción del backend y frontend
+FROM maven:3.8.6-eclipse-temurin-17 AS build
 
-# Stage 1: Build the application
-FROM maven:3.8.4-openjdk-17-slim AS build
+# Crear directorio de trabajo
 WORKDIR /app
 
-# Copy the pom.xml and download dependencies
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
+# Copiar los archivos del proyecto
+COPY pom.xml mvnw ./
+COPY .mvn .mvn
+COPY src src
 
-# Copy the source code and build the application
-COPY src ./src
-RUN mvn package -DskipTests
+# Compilar la aplicación en modo producción
+RUN ./mvnw -Pprod clean package -DskipTests
 
-# Stage 2: Create the final image
-FROM openjdk:17-jdk-slim
+# Etapa 2: Construcción de la imagen de producción
+FROM eclipse-temurin:17-jre-alpine
+
+# Variables de entorno
+ENV SPRING_PROFILES_ACTIVE=prod
+
+# Crear directorio de trabajo para la aplicación
 WORKDIR /app
 
-# Copy the JAR file from the build stage
+# Copiar el archivo JAR compilado desde la etapa de construcción
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose the port the application runs on
+# Exponer el puerto de la aplicación
 EXPOSE 8080
 
-# Run the application
+# Comando para ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "app.jar"]
