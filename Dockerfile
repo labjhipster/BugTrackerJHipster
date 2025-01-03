@@ -1,22 +1,40 @@
-# Etapa 1: Construcción de la aplicación Angular
-FROM node:22 AS build-angular
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm install
-COPY . .
-RUN npm run webapp:build:prod
+# Etapa 1: Construcción del backend y frontend
+FROM maven:3.8.6-eclipse-temurin-17 AS build
 
-# Etapa 2: Construcción de la aplicación Spring Boot
-FROM maven:3.8.6-eclipse-temurin-17 AS build-spring
+# Crear directorio de trabajo
 WORKDIR /app
+
+# Copiar los archivos del proyecto
 COPY pom.xml mvnw *.properties *.json ./
-COPY src ./src
-COPY --from=build-angular /app/target/classes/static ./src/main/resources/static
-RUN mvn -Pprod clean package -DskipTests -Dskip.npm -Dsonar.skip=true
+COPY .mvn .mvn
+COPY src src
+COPY webpack webpack
 
-# Etapa 3: Imagen final
-FROM eclipse-temurin:17-jre-focal
+# Instalar Node.js 22 y npm
+RUN apt-get update && apt-get install -y curl gnupg && \
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs 
+
+# Compilar la aplicación en modo producción
+RUN ./mvnw -Pprod clean package -DskipTests -Dskip.npm
+
+# Etapa 2: Construcción de la imagen de producción
+FROM eclipse-temurin:17-jre-alpine
+
+# Variables de entorno
+ENV TZ=UTC \
+    _JAVA_OPTIONS="-Xmx512m -Xms256m" \
+    SPRING_PROFILES_ACTIVE=prod,api-docs
+
+
+# Crear directorio de trabajo para la aplicación
 WORKDIR /app
-COPY --from=build-spring /app/target/*.jar app.jar
+
+# Copiar el archivo JAR compilado desde la etapa de construcción
+COPY --from=build /app/target/*.jar app.jar
+
+# Exponer el puerto de la aplicación
 EXPOSE 8080
+
+# Comando para ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "app.jar"]
