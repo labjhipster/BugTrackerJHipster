@@ -1,0 +1,24 @@
+@if (label) {
+  <form name="deleteForm" (ngSubmit)="confirmDelete(label.id!)">
+    <div class="modal-header">
+      <h4 class="modal-title" data-cy="labelDeleteDialogHeading" jhiTranslate="entity.delete.title">Confirmar operación de borrado</h4>
+    </div>
+
+    <div class="modal-body">
+      <jhi-alert-error></jhi-alert-error>
+      <p id="jhi-delete-label-heading" jhiTranslate="bugTrackerJHipsterApp.label.delete.question" [translateValues]="{ id: label.id }">
+        ¿Seguro que quiere eliminar Label {{ label.id }}?
+      </p>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
+        <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancelar</span>
+      </button>
+
+      <button id="jhi-confirm-delete-label" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger">
+        <fa-icon icon="times"></fa-icon>&nbsp;<span jhiTranslate="entity.action.delete">Eliminar</span>
+      </button>
+    </div>
+  </form>
+}

@@ -1,0 +1,110 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (ticket(); as ticketRef) {
+      <div>
+        <h2 data-cy="ticketDetailsHeading"><span jhiTranslate="bugTrackerJHipsterApp.ticket.detail.title">Ticket</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ ticketRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="bugTrackerJHipsterApp.ticket.title">Title</span></dt>
+          <dd>
+            <span>{{ ticketRef.title }}</span>
+          </dd>
+          <dt><span jhiTranslate="bugTrackerJHipsterApp.ticket.description">Description</span></dt>
+          <dd>
+            <span>{{ ticketRef.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="bugTrackerJHipsterApp.ticket.dueDate">Due Date</span></dt>
+          <dd>
+            <span>{{ ticketRef.dueDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="bugTrackerJHipsterApp.ticket.date">Date</span></dt>
+          <dd>
+            <span>{{ ticketRef.date | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="bugTrackerJHipsterApp.ticket.status">Status</span></dt>
+          <dd>
+            <span [jhiTranslate]="'bugTrackerJHipsterApp.Status.' + (ticketRef.status ?? 'null')">{{
+              {
+                null: '',
+                OPEN: 'Open',
+                WAITING_FOR_RESPONSE: 'Waiting for Customer Response',
+                CLOSED: 'Closed',
+                DUPLICATE: 'Duplicate',
+                IN_PROGRESS: 'In Progress',
+                REOPENED: 'Reopened',
+                CANNOT_REPRODUCE: 'Cannot Reproduce',
+                SOLVED: 'Solved',
+                WONT_IMPLEMENT: 'Won&#39;t Implement',
+                VERIFIED: 'Verified',
+              }[ticketRef.status ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="bugTrackerJHipsterApp.ticket.type">Type</span></dt>
+          <dd>
+            <span [jhiTranslate]="'bugTrackerJHipsterApp.Type.' + (ticketRef.type ?? 'null')">{{
+              { null: '', BUG: 'Bug', FEATURE: 'Feature' }[ticketRef.type ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="bugTrackerJHipsterApp.ticket.priority">Priority</span></dt>
+          <dd>
+            <span [jhiTranslate]="'bugTrackerJHipsterApp.Priority.' + (ticketRef.priority ?? 'null')">{{
+              {
+                null: '',
+                HIGHEST: 'Highest',
+                HIGHER: 'Higher',
+                HIGH: 'High',
+                NORMAL: 'Normal',
+                LOW: 'Low',
+                LOWER: 'Lower',
+                LOWERST: 'Lowest',
+              }[ticketRef.priority ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="bugTrackerJHipsterApp.ticket.project">Project</span></dt>
+          <dd>
+            @if (ticket()!.project) {
+              <div>
+                <a [routerLink]="['/project', ticket()!.project?.id, 'view']">{{ ticketRef.project?.name }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="bugTrackerJHipsterApp.ticket.assignedTo">Assigned To</span></dt>
+          <dd>
+            <span>{{ ticketRef.assignedTo?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="bugTrackerJHipsterApp.ticket.reportedBy">Reported By</span></dt>
+          <dd>
+            <span>{{ ticketRef.reportedBy?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="bugTrackerJHipsterApp.ticket.label">Label</span></dt>
+          <dd>
+            @for (label of ticketRef.labels; track $index; let last = $last) {
+              <span>
+                <a [routerLink]="['/label', label.id, 'view']">{{ label?.label }}</a
+                >{{ last ? '' : ', ' }}
+              </span>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Volver</span>
+        </button>
+
+        <button type="button" [routerLink]="['/ticket', ticketRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

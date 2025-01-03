@@ -1,0 +1,103 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-attachment-heading"
+        data-cy="AttachmentCreateUpdateHeading"
+        jhiTranslate="bugTrackerJHipsterApp.attachment.home.createOrEditLabel"
+      >
+        Crear o editar Attachment
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="bugTrackerJHipsterApp.attachment.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let nameRef = editForm.get('name')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_name" jhiTranslate="bugTrackerJHipsterApp.attachment.name">Name</label>
+          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          @if (nameRef.invalid && (nameRef.dirty || nameRef.touched)) {
+            <div>
+              @if (editForm.get('name')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Este campo es obligatorio.</small>
+              }
+              @if (editForm.get('name')?.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: '3' }"
+                  >Este campo requiere al menos 3 caracteres.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let fileRef = editForm.get('file')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_file" jhiTranslate="bugTrackerJHipsterApp.attachment.file">File</label>
+          <div>
+            @if (fileRef.value) {
+              <div class="form-text text-danger clearfix">
+                <span class="pull-start">{{ editForm.get('fileContentType')!.value }}, {{ byteSize(fileRef.value!) }}</span>
+                <button
+                  type="button"
+                  (click)="editForm.patchValue({ file: undefined, fileContentType: undefined })"
+                  class="btn btn-secondary btn-xs pull-end"
+                >
+                  <fa-icon icon="times"></fa-icon>
+                </button>
+              </div>
+            }
+            <input
+              type="file"
+              id="file_file"
+              data-cy="file"
+              (change)="setFileData($event, 'file', false)"
+              jhiTranslate="entity.action.addblob"
+            />
+          </div>
+          <input type="hidden" class="form-control" name="file" id="field_file" data-cy="file" formControlName="file" />
+          <input type="hidden" class="form-control" name="fileContentType" id="field_fileContentType" formControlName="fileContentType" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_ticket" jhiTranslate="bugTrackerJHipsterApp.attachment.ticket">Ticket</label>
+          <select
+            class="form-control"
+            id="field_ticket"
+            data-cy="ticket"
+            name="ticket"
+            formControlName="ticket"
+            [compareWith]="compareTicket"
+          >
+            <option [ngValue]="null"></option>
+            @for (ticketOption of ticketsSharedCollection; track $index) {
+              <option [ngValue]="ticketOption">{{ ticketOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancelar</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Guardar</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,213 @@
+<div>
+  <h2 id="page-heading" data-cy="TicketHeading">
+    <span jhiTranslate="bugTrackerJHipsterApp.ticket.home.title">Tickets</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="bugTrackerJHipsterApp.ticket.home.refreshListLabel">Refrescar lista</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-ticket"
+        [routerLink]="['/ticket/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="bugTrackerJHipsterApp.ticket.home.createLabel">Crear nuevo Ticket</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (tickets().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="bugTrackerJHipsterApp.ticket.home.notFound">Ningún Tickets encontrado</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="title">
+              <div class="d-flex">
+                <span jhiTranslate="bugTrackerJHipsterApp.ticket.title">Title</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="description">
+              <div class="d-flex">
+                <span jhiTranslate="bugTrackerJHipsterApp.ticket.description">Description</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dueDate">
+              <div class="d-flex">
+                <span jhiTranslate="bugTrackerJHipsterApp.ticket.dueDate">Due Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="date">
+              <div class="d-flex">
+                <span jhiTranslate="bugTrackerJHipsterApp.ticket.date">Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status">
+              <div class="d-flex">
+                <span jhiTranslate="bugTrackerJHipsterApp.ticket.status">Status</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="type">
+              <div class="d-flex">
+                <span jhiTranslate="bugTrackerJHipsterApp.ticket.type">Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="priority">
+              <div class="d-flex">
+                <span jhiTranslate="bugTrackerJHipsterApp.ticket.priority">Priority</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="project.name">
+              <div class="d-flex">
+                <span jhiTranslate="bugTrackerJHipsterApp.ticket.project">Project</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="assignedTo.login">
+              <div class="d-flex">
+                <span jhiTranslate="bugTrackerJHipsterApp.ticket.assignedTo">Assigned To</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="reportedBy.login">
+              <div class="d-flex">
+                <span jhiTranslate="bugTrackerJHipsterApp.ticket.reportedBy">Reported By</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ticket of tickets(); track trackId(ticket)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/ticket', ticket.id, 'view']">{{ ticket.id }}</a>
+              </td>
+              <td>{{ ticket.title }}</td>
+              <td>{{ ticket.description }}</td>
+              <td>{{ ticket.dueDate | formatMediumDate }}</td>
+              <td>{{ ticket.date | formatMediumDatetime }}</td>
+              <td [jhiTranslate]="'bugTrackerJHipsterApp.Status.' + (ticket.status ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    OPEN: 'Open',
+                    WAITING_FOR_RESPONSE: 'Waiting for Customer Response',
+                    CLOSED: 'Closed',
+                    DUPLICATE: 'Duplicate',
+                    IN_PROGRESS: 'In Progress',
+                    REOPENED: 'Reopened',
+                    CANNOT_REPRODUCE: 'Cannot Reproduce',
+                    SOLVED: 'Solved',
+                    WONT_IMPLEMENT: 'Won&#39;t Implement',
+                    VERIFIED: 'Verified',
+                  }[ticket.status ?? 'null']
+                }}
+              </td>
+              <td [jhiTranslate]="'bugTrackerJHipsterApp.Type.' + (ticket.type ?? 'null')">
+                {{ { null: '', BUG: 'Bug', FEATURE: 'Feature' }[ticket.type ?? 'null'] }}
+              </td>
+              <td [jhiTranslate]="'bugTrackerJHipsterApp.Priority.' + (ticket.priority ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    HIGHEST: 'Highest',
+                    HIGHER: 'Higher',
+                    HIGH: 'High',
+                    NORMAL: 'Normal',
+                    LOW: 'Low',
+                    LOWER: 'Lower',
+                    LOWERST: 'Lowest',
+                  }[ticket.priority ?? 'null']
+                }}
+              </td>
+              <td>
+                @if (ticket.project) {
+                  <div>
+                    <a [routerLink]="['/project', ticket.project.id, 'view']">{{ ticket.project.name }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                {{ ticket.assignedTo?.login }}
+              </td>
+              <td>
+                {{ ticket.reportedBy?.login }}
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/ticket', ticket.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Vista</span>
+                  </a>
+
+                  <a [routerLink]="['/ticket', ticket.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editar</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(ticket)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Eliminar</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (tickets().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

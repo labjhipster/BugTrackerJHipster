@@ -50,6 +50,15 @@ public class CacheConfiguration {
             createCache(cm, es.labj.bugtracker.domain.User.class.getName());
             createCache(cm, es.labj.bugtracker.domain.Authority.class.getName());
             createCache(cm, es.labj.bugtracker.domain.User.class.getName() + ".authorities");
+            createCache(cm, es.labj.bugtracker.domain.Project.class.getName());
+            createCache(cm, es.labj.bugtracker.domain.Label.class.getName());
+            createCache(cm, es.labj.bugtracker.domain.Label.class.getName() + ".tickets");
+            createCache(cm, es.labj.bugtracker.domain.Ticket.class.getName());
+            createCache(cm, es.labj.bugtracker.domain.Ticket.class.getName() + ".attachments");
+            createCache(cm, es.labj.bugtracker.domain.Ticket.class.getName() + ".labels");
+            createCache(cm, es.labj.bugtracker.domain.Attachment.class.getName());
+            createCache(cm, es.labj.bugtracker.domain.Comment.class.getName());
+            createCache(cm, es.labj.bugtracker.domain.Comment.class.getName() + ".parents");
             // jhipster-needle-ehcache-add-entry
         };
     }
