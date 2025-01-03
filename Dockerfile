@@ -13,7 +13,7 @@ COPY webpack webpack
 # Instalar Node.js 22 y npm
 RUN apt-get update && apt-get install -y curl gnupg && \
     curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y nodejs 
+    apt-get install -y nodejs npm
 
 # Compilar la aplicación en modo producción
 #RUN ./mvnw -Pprod clean package -DskipTests -Dskip.npm
