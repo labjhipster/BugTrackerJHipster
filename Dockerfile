@@ -10,11 +10,11 @@ COPY .mvn .mvn
 COPY src src
 COPY webpack webpack
 
-# Instalación de Node.js 22 y npm
-RUN apk add --no-cache curl bash \
-    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apk add --no-cache nodejs npm
-    
+# Instalar Node.js 22 y npm
+RUN apt-get update && apt-get install -y curl gnupg && \
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs 
+
 # Compilar la aplicación en modo producción
 RUN ./mvnw -Pprod clean package -DskipTests
 
