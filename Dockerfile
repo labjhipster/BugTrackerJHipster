@@ -16,25 +16,27 @@ RUN apt-get update && apt-get install -y curl gnupg && \
     apt-get install -y nodejs 
 
 # Compilar la aplicación en modo producción
-RUN ./mvnw -Pprod clean package -DskipTests -Dskip.npm
+#RUN ./mvnw -Pprod clean package -DskipTests -Dskip.npm
+#RUN ./mvnw -Pprod clean package -DskipTests
+RUN ./mvnw package -Pprod verify jib:dockerBuild -DskipTests
 
-# Etapa 2: Construcción de la imagen de producción
-FROM eclipse-temurin:17-jre-alpine
+# # Etapa 2: Construcción de la imagen de producción
+# FROM eclipse-temurin:17-jre-alpine
 
-# Variables de entorno
-ENV TZ=UTC \
-    _JAVA_OPTIONS="-Xmx512m -Xms256m" \
-    SPRING_PROFILES_ACTIVE=prod,api-docs
+# # Variables de entorno
+# ENV TZ=UTC \
+#     _JAVA_OPTIONS="-Xmx512m -Xms256m" \
+#     SPRING_PROFILES_ACTIVE=prod,api-docs
 
 
-# Crear directorio de trabajo para la aplicación
-WORKDIR /app
+# # Crear directorio de trabajo para la aplicación
+# WORKDIR /app
 
-# Copiar el archivo JAR compilado desde la etapa de construcción
-COPY --from=build /app/target/*.jar app.jar
+# # Copiar el archivo JAR compilado desde la etapa de construcción
+# COPY --from=build /app/target/*.jar app.jar
 
-# Exponer el puerto de la aplicación
-EXPOSE 8080
+# # Exponer el puerto de la aplicación
+# EXPOSE 8080
 
-# Comando para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# # Comando para ejecutar la aplicación
+# ENTRYPOINT ["java", "-jar", "app.jar"]
