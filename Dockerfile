@@ -5,19 +5,22 @@ FROM maven:3.8.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
 # Copiar los archivos del proyecto
-COPY pom.xml mvnw ./
+COPY pom.xml mvnw *.properties *.json ./
 COPY .mvn .mvn
 COPY src src
+COPY webpack webpack
 
 # Compilar la aplicación en modo producción
-RUN mvn -Pprod clean package -DskipTests
+RUN ./mvnw -Pprod clean package -DskipTests
 
 # Etapa 2: Construcción de la imagen de producción
 FROM eclipse-temurin:17-jre-alpine
 
 # Variables de entorno
 ENV TZ=UTC \
-    SPRING_PROFILES_ACTIVE=prod
+    _JAVA_OPTIONS="-Xmx512m -Xms256m" \
+    SPRING_PROFILES_ACTIVE=prod,api-docs
+
 
 # Crear directorio de trabajo para la aplicación
 WORKDIR /app
