@@ -1,24 +1,26 @@
 # Etapa 1: Construcción del backend y frontend
 FROM maven:3.8.6-eclipse-temurin-17 AS build
 
+# Instalar Node.js 22 y npm
+RUN apt-get update && apt-get install -y curl gnupg && \
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs 
+
 # Crear directorio de trabajo
 WORKDIR /app
 
 # Copiar los archivos del proyecto
-COPY pom.xml mvnw *.properties *.json ./
+COPY pom.xml mvnw *.properties *.json *.xml ./
 COPY .mvn .mvn
 COPY src src
 COPY webpack webpack
 
-# Instalar Node.js 22 y npm
-RUN apt-get update && apt-get install -y curl gnupg && \
-    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y nodejs npm
 
 # Compilar la aplicación en modo producción
 #RUN ./mvnw -Pprod clean package -DskipTests -Dskip.npm
 #RUN ./mvnw -Pprod clean package -DskipTests
-RUN ./mvnw package -Pprod verify jib:dockerBuild -DskipTests
+RUN ./mvnw package -Pprod verify jib:build -DskipTests
+    
 
 # # Etapa 2: Construcción de la imagen de producción
 # FROM eclipse-temurin:17-jre-alpine
