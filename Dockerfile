@@ -5,7 +5,7 @@ FROM maven:3.8.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
 # Copiar los archivos del proyecto
-COPY pom.xml mvnw *.properties *.json ./
+COPY pom.xml mvnw *.properties *.json *.xml ./
 COPY .mvn .mvn
 COPY src src
 COPY webpack webpack
